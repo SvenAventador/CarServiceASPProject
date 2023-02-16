@@ -1,0 +1,57 @@
+﻿@model CarServiceLibrary.Models.Entities.Users
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="container d-flex justify-content-center">
+    <form class="w-50 border p-3 fs-4 form"
+          asp-controller="Account"
+          asp-action="Login">
+        <div class="row text-center">
+            <h2>Вход в личный кабинет</h2>
+            <div class="decor-line"></div>
+        </div>
+        <div class="row m-3">
+            <div class="form-group">
+                <label asp-for="TelephoneNumber"
+                       class="fw-bold m-1"
+                       for="phone">
+                    Номер телефона
+                </label>
+                <input type="text"
+                       @*asp-for="TelephoneNumber"*@
+                       class="form-control py-2 fs-5"
+                       name="phone"
+                       id="phone"
+                       placeholder="Номер телефона">
+            </div>
+        </div>
+        <div class="row m-3">
+            <div class="form-group">
+                <label class="fw-bold m-1"
+                       @*asp-for="PasswordUser"*@
+                       for="password">
+                    Пароль
+                </label>
+                <input type="password"
+                       @*asp-for="PasswordUser"*@
+                       class="form-control py-2 fs-5"
+                       name="password"
+                       id="password"
+                       placeholder="Пароль">
+            </div>
+        </div>
+        <div class="row mx-5 text-center">
+            <button type="submit" class="btn btn-danger fw-bold fs-4">Войти</button>
+            <a class="nav-link text-dark fs-5"
+               asp-area=""
+               asp-route-phone=""
+               asp-all-route-username=""
+               asp-controller="Account"
+               asp-action="Registration" >
+                Зарегистрировать аккаунт
+            </a>
+        </div>
+    </form>
+</div>

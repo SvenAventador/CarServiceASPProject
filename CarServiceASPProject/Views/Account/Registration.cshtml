@@ -1,0 +1,61 @@
+﻿@model CarServiceLibrary.Models.Entities.Users
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="container d-flex justify-content-center">
+	<form asp-controller="Account" asp-action="RegisterAccount" class="w-50 border p-3 fs-4 form">
+		<div class="row text-center">
+			<h2>Регистрация</h2>
+			<div class="decor-line"></div>
+		</div>
+		<div class="row m-3">
+			<div class="form-group">
+				<label asp-for="TelephoneNumber"
+				       class="fw-bold m-1"
+				       for="phone">
+					Номер телефона
+				</label>
+				<input type="text" 
+				       asp-for="TelephoneNumber" 
+				       class="form-control py-2 fs-5" 
+				       id="phone"  
+				       placeholder="Номер телефона" >
+			</div>
+		</div>
+		<div class="row m-3">
+			<div class="form-group">
+				<label class="fw-bold m-1"
+				       asp-for="PasswordUser"
+				       for="password">
+					Пароль
+				</label>
+				<input type="password" 
+				       asp-for="PasswordUser" 
+				       class="form-control py-2 fs-5" 
+				       id="password"  
+				       placeholder="Пароль">
+			</div>
+		</div>
+				 <div class="row m-3">
+        			<div class="form-group">
+        				<label class="fw-bold m-1 is-hidden"
+        				       asp-for="RoleUser"
+        				       for="role">
+        					Роль
+        				</label>
+        				<input type="text" 
+        				       asp-for="RoleUser" 
+        				       class="form-control py-2 fs-5 is-hidden" 
+				               id="role" 
+				               value="USER"
+				               placeholder="Роль">
+        			</div>
+        		</div>
+		<div class="row mx-5 text-center">
+			<button type="submit" class="btn btn-danger fw-bold fs-4">Зарегистрироваться</button>
+		</div>
+</form>
+
+</div>
