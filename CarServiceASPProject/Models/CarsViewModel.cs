@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
-using Microsoft.ASP
-using CarServiceLibrary.Models.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace CarServiceLibrary.Models.ViewModels;
+namespace CarServiceASPProject.Models;
 
 public class CarsViewModel
 {
-
+    [DisplayName("Car")]
+    public int CarId { get; set; }
+    
+    public List<SelectListItem> ListofCar { get; set; }
 }

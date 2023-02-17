@@ -1,16 +1,19 @@
 ﻿using System.Diagnostics;
-using CarServiceProject.Models;
+using CarServiceASPProject.Models;
+using CarServiceLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CarServiceProject.Controllers;
+namespace CarServiceASPProject.Controllers;
 
 public class AdminController : Controller
 {
-    private readonly ILogger<AdminController> _logger;
 
-    public AdminController(ILogger<AdminController> logger)
+    private readonly CarServiceDbContext _db;
+
+    
+    public AdminController(CarServiceDbContext context)
     {
-        _logger = logger;
+        _db = context;
     }
 
     public IActionResult AdminPanel()

@@ -1,31 +1,30 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using CarServiceASPProject.Models;
+using CarServiceLibrary.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace CarServiceASPProject.Controllers;
-
-public class HomeController : Controller
+namespace CarServiceASPProject.Controllers
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    public class HomeController : Controller
     {
-        _logger = logger;
-    }
+        private readonly CarServiceDbContext _db;
 
-    public IActionResult Index()
-    {
-        return View();
-    }
+        public HomeController(CarServiceDbContext context)
+        {
+            _db = context;
+        }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+        public async Task<IActionResult> Index()
+        {
+            return View(await _db.Cars.ToListAsync());
+        }
+        
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model CarServiceLibrary.ViewModels.ServicesViewModel
+﻿@model (CarsViewModel cM, CarServiceLibrary.Models.ViewModels.ServicesViewModel vm) 
 
 @{
 }
@@ -7,16 +7,30 @@
         <div class="col-12 d-flex flex-column align-items-start justify-content-center col-lg-6 col-xl-5 ">
             <h1 >Комплексная диагностика</h1>
             <ul class="py-4">
-                <li class="fs-5">Комплексная диагностика авто перед покупкой</li>
-                <li class="fs-5">Бесплатный осмотр ходовой</li>
-                <li class="fs-5">Компьютерная диагностика</li>
-                <li class="fs-5">Наш сервис имеет удобное местоположение</li>
+                <li class="fs-5">
+                    Комплексная диагностика авто перед покупкой
+                </li>
+                <li class="fs-5">
+                    Бесплатный осмотр ходовой
+                </li>
+                <li class="fs-5">
+                    Компьютерная диагностика</li>
+                <li class="fs-5">
+                    Наш сервис имеет удобное местоположение
+                </li>
             </ul>
-            <a class="btn btn-danger fs-4" href="" role="button">Бесплатная диагностика</a>
+            <a class="btn btn-danger fs-4"
+               href="#"
+               role="button">
+                Бесплатная диагностика
+            </a>
         </div>
         <div class="col-md-5 col-lg-5 offset-lg-1 d-none d-lg-block phone-holder">
             <div class="iphone-mockup">
-                <img class="device" src="~/Images/header.png" alt="">
+                <img class="device" 
+                     src="~/Images/header.png" 
+                     alt="Header logo"
+                     aria-label="Header logotype">
             </div>
         </div>
     </div>
@@ -26,7 +40,7 @@
     <div class="decor-line"></div>
     <div class="container">
         <div class="row row-cols-2 row-cols-lg-2">
-            @foreach (var item in Model.Services)
+            @foreach (var item in Model.vm.Services)
             {
                 <div class="col my-3">
                     <div id="serviceModal" class="card border-radius-lg shadow-sm" onclick="showModal(@item.Id)" data-bs-toggle="modal" data-bs-target="#GetService">
@@ -40,81 +54,130 @@
     </div>
     
     <!-- Modal OrderService -->
-<div class="modal fade"
-     id="GetService"
-     tabindex="-1"
-     aria-labelledby="orderService"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form>
-                <div class="modal-header justify-content-center">
-                    <h2 class="modal-title"
-                        id="ServiceName">
-                    </h2>
-                </div>
-                <div class="modal-body text-start">
-                    <div class="row m-3">
-                        <div class="form-group">
-                            <label class="fw-bold m-1" for="name">Ваше имя</label>
-                            <input type="text" class="form-control py-2 fs-5" id="name" placeholder="Имя">
-                        </div>
+    <div class="modal fade"
+         id="GetService"
+         tabindex="-1"
+         aria-labelledby="orderService"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form
+                    asp-controller="MainActions"
+                    asp-action="CreateOrder">
+                    <div class="modal-header text-center justify-content-center">
+                        <h2 class="modal-title"
+                            id="ServiceName">
+                        </h2>
+                        <input class="is-hidden"
+                               id="getServiceId"
+                               name="serviceName"/>
                     </div>
-                    <div class="row m-3">
-                        <div class="col">
+                    <div class="modal-body text-start">
+                        <div class="row m-3">
                             <div class="form-group">
-                                <label class="fw-bold m-1" for="car">Марка</label>
-                                <input type="text" class="form-control py-2 fs-5" id="car" placeholder="Марка машины">
+                                <label class="fw-bold m-1" for="name">Ваше имя</label>
+                                <input type="text"
+                                       class="form-control py-2 fs-5"
+                                       id="name"
+                                       placeholder="Имя"
+                                       name="userName">
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label class="fw-bold m-1" for="carModel">Модель</label>
-                                <input type="text" class="form-control py-2 fs-5" id="carModel" placeholder="Модель машины">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row m-3">
-                        <div class="form-group">
-                            <label class="fw-bold m-1" for="comment">Комментарий</label>
-                            <input type="text" class="form-control py-2 fs-5" id="comment" placeholder="Комментарий">
-                        </div>
-                    </div>
-                    <div class="row m-3">
-                        <div class="form-group">
-                            <label class="fw-bold m-1" for="phone">Телефон</label>
-                            <input type="text" class="form-control py-2 fs-5" id="phone" placeholder="Номер телефона">
-                        </div>
-                    </div>
-                </div>
-            </form>
+                        <div class="row m-3">
+                            <div class="col">
+                                <div class="form-group">
 
-            <div class="modal-footer">
-                <div class="row mx-5 text-center">
-                    <button type="submit" class="btn btn-danger fw-bold fs-4">Оставить заявку</button>
-                    <p class="fs-5 p-2">Оперативно перезваниваем в рабочее время</p>
-                </div>
+                                    <label class="fw-bold m-1"
+                                           asp-for="cM.CarId">
+                                        Машины
+                                    </label>
+                                    <select asp-for="cM.CarId"
+                                            class="form-control py-2 fs-5"
+                                            asp-items="@(new SelectList(ViewBag.ListofCars, "Value", "Text"))"
+                                            name="carName">
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label
+                                        class="fw-bold m-1"
+                                        for="carModel">
+                                        Модель
+                                    </label>
+                                    <input type="text"
+                                           class="form-control py-2 fs-5"
+                                           id="carModel"
+                                           placeholder="Модель машины"
+                                           name="carModel">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row m-3">
+                            <div class="form-group">
+                                <label class="fw-bold m-1"
+                                       for="comment">
+                                    Комментарий
+                                </label>
+                                <input type="text"
+                                       class="form-control py-2 fs-5"
+                                       id="comment"
+                                       placeholder="Комментарий"
+                                       name="descrption">
+                            </div>
+                        </div>
+                        <div class="row m-3">
+                            <div class="form-group">
+                                <label class="fw-bold m-1"
+                                       for="phone">
+                                    Телефон
+                                </label>
+                                <input type="text"
+                                       class="form-control py-2 fs-5"
+                                       id="phone"
+                                       placeholder="Номер телефона"
+                                       name="phone">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="row mx-5 text-center">
+                            <button
+                                asp-controller="MainActions"
+                                asp-action="CreateOrder"
+                                type="submit"
+                                class="btn btn-danger fw-bold fs-4">
+                                Оставить заявку
+                            </button>
+                            <p class="fs-5 p-2">Оперативно перезваниваем в рабочее время</p>
+                        </div>
+                    </div>
+
+                </form>
+
             </div>
 
         </div>
-       
     </div>
-</div>
 </div>
 
 @section Scripts {
     <script type="text/javascript">
-		var showModal = function(id)
-		{
-		  $.ajax({
-		   type: "POST",
-		   url: "/MainActions/GetService",
-		   data: { id:id},
-		   success: function(service){
-			 $("#GetService").modal('show');
-			  $("#ServiceName").text(service.serviceName);
-		   }
-		  })
-		}
-		</script>
+        var showModal = function(id)
+        {
+          $.ajax({
+           type: "POST",
+           url: "/MainActions/GetService",
+           data: { id:id},
+           success: function(service){
+             $("#GetService").modal('show');
+              $("#ServiceName").text(service.serviceName);
+              $("#getServiceId").val('').val(service.serviceName);
+           }
+         })
+        }
+
+      </script>
 }

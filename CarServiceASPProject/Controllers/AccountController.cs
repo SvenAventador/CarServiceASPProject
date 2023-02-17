@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
+using CarServiceASPProject.Models;
 using CarServiceLibrary.Models;
 using CarServiceLibrary.Models.Entities;
-using CarServiceProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarServiceProject.Controllers;
+namespace CarServiceASPProject.Controllers;
 
 public class AccountController : Controller
 {
@@ -34,31 +34,25 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> RegisterAccount(Users user)
     {
-        if (ModelState.IsValid)
-        {
-            _db.Users.Add(user);
-            await _db.SaveChangesAsync();
-            return RedirectToAction("Login");
-        }
+        if (!ModelState.IsValid) return Content("Не валидно!");
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
+        return RedirectToAction("Login");
 
-        return Content("Не валидно!");
     }
 
     [HttpPost]
     public async Task<IActionResult> Login(string phone, string password)
     {
-        if (!Validator.Validator.ValidatePhone(phone)) return Content("Не валидный телефон!");
+        if (!CarServiceProject.Validator.Validator.ValidatePhone(phone)) return Content("Не валидный телефон!");
 
-        if (!Validator.Validator.ValidatePassword(password)) return Content("Не валидный пароль!");
+        if (!CarServiceProject.Validator.Validator.ValidatePassword(password)) return Content("Не валидный пароль!");
 
         var findUser =
             await _db.Users.FirstOrDefaultAsync(x => x.TelephoneNumber == phone && x.PasswordUser == password);
 
-        if (findUser != null)
-        {
-            return Content("Регистрация прошла успешно!");
-        }
-
+        if (findUser != null) return Redirect("/MainActions/Diagnostic");
+        
         return NotFound();
     }
 

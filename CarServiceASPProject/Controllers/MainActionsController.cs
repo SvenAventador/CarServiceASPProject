@@ -1,12 +1,14 @@
 ﻿using System.Diagnostics;
+using CarServiceASPProject.Models;
 using CarServiceLibrary.Models;
 using CarServiceLibrary.Models.Entities;
-using CarServiceLibrary.ViewModels;
-using CarServiceProject.Models;
+using CarServiceLibrary.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+#pragma warning disable CS8602
 
-namespace CarServiceProject.Controllers;
+namespace CarServiceASPProject.Controllers;
 
 public class MainActionsController : Controller
 {
@@ -17,23 +19,118 @@ public class MainActionsController : Controller
         _db = context;
     }
 
+    #region Вывод данных услуг.
 
-    #region MyRegion
-
-    public IActionResult Diagnostic()
+    public IActionResult Maintenance()
     {
-        var services = _db.Services.Where(s => s.TypeId == 4).ToList();
-        var vm = new ServicesViewModel();
-        vm.Services = services;
-        return View(vm);
+        var services = _db.Services.
+                                    Where(s => s.TypeId == 2)
+                                    .ToList();
+        var vm = new ServicesViewModel
+        {
+            Services = services
+        };
+
+        var carList = (from car in _db.Cars
+            select new SelectListItem()
+            {
+                Text = car.CarName,
+                Value = car.Id.ToString()
+            }).ToList();
+        
+        carList.Insert(0, new SelectListItem()
+        {
+            Text = "Пожалуйста, выберите марку автомобиля!",
+            Value = string.Empty
+        });
+
+        var cars = _db.Cars.ToList();
+
+        var cM = new CarsViewModel
+        {
+            ListofCar = carList
+        };
+
+        var modelTuple = (cM, vm);
+
+        ViewBag.ListofCars = carList;
+
+        return View(modelTuple);
     }
 
-    public async Task<IActionResult> Maintenance()
+
+    public IActionResult Detailing()
     {
-        var services = _db.Services.Where(s => s.TypeId == 2).ToList();
-        var vm = new ServicesViewModel();
-        vm.Services = services;
-        return View(vm);
+        var services = _db.Services.
+            Where(s => s.TypeId == 3)
+            .ToList();
+        var vm = new ServicesViewModel
+        {
+            Services = services
+        };
+
+        var carList = (from car in _db.Cars
+            select new SelectListItem
+            {
+                Text = car.CarName,
+                Value = car.Id.ToString()
+            }).ToList();
+        
+        carList.Insert(0, new SelectListItem()
+        {
+            Text = "Пожалуйста, выберите марку автомобиля!",
+            Value = string.Empty
+        });
+
+        var cars = _db.Cars.ToList();
+
+        var cM = new CarsViewModel
+        {
+            ListofCar = carList
+        };
+
+        var modelTuple = (cM, vm);
+
+        ViewBag.ListofCars = carList;
+
+        return View(modelTuple);
+    }
+    
+    public IActionResult Diagnostic()
+    {
+        var services = _db.Services.
+            Where(s => s.TypeId == 4)
+            .ToList();
+        var vm = new ServicesViewModel
+        {
+            Services = services
+        };
+
+        var carList = (from car in _db.Cars
+            select new SelectListItem()
+            {
+                Text = car.CarName,
+                Value = car.Id.ToString()
+            }).ToList();
+        
+        carList.Insert(0, new SelectListItem()
+        {
+            Text = "Пожалуйста, выберите марку автомобиля!",
+            Value = string.Empty
+        });
+
+        var cars = _db.Cars.ToList();
+
+        var cM = new CarsViewModel
+        {
+            ListofCar = carList
+        };
+
+        var modelTuple = (cM, vm);
+
+        ViewBag.ListofCars = carList;
+
+        return View(modelTuple);
     }
 
     public IActionResult GetService(int id)
@@ -42,57 +139,39 @@ public class MainActionsController : Controller
         return Json(service);
     }
 
-    public IActionResult Repair()
-    {
-        return View();
-    }
+    #endregion
+    
+    #region Вывод представлений на экран.
 
-    public IActionResult Detailing()
-    {
-		var services = _db.Services.Where(s => s.TypeId == 3).ToList();
-		ServicesViewModel vm = new ServicesViewModel();
-		vm.Services = services;
-		return View(vm);
-	}
+    public IActionResult Repair() => View();
 
-    public IActionResult Contacts()
-    {
-        return View();
-    }
+    public IActionResult Contacts() => View();
 
-    public IActionResult OnMarks()
-    {
-        return View();
-    }
+    public IActionResult OnMarks() => View();
 
-    public IActionResult AboutService()
-    {
-        return View();
-    }
+    public IActionResult AboutService() => View();
 
     #endregion
 
+    #region Создание заявок на услуги.
+
     [HttpPost]
-    public async Task<IActionResult> CreateOrder(string phone, string userName, string userCar, string carModel, int id)
+    public async Task<IActionResult> CreateOrder(string userName, string carName, string carModel, string phone, string serviceName)
     {
-        if (string.IsNullOrEmpty(userName)) return Content("Пожалуйста, введите Ваше имя!");
-        if (string.IsNullOrEmpty(carModel)) return Content("Пожалуйста, введите марку Вашей машины!");
-
         var user = await _db.Users.FirstOrDefaultAsync(x => x.TelephoneNumber == phone);
-        var car = await _db.Cars.FirstOrDefaultAsync(x => x.CarName == userCar);
-
-        var random = new Random();
-
-        var carId = car?.Id ?? random.Next(1, 9);
         var userId = user?.Id ?? 1;
 
-        var order = new Orders(userId, id, userName, 1, carId, carModel);
+        var service = await _db.Services.FirstOrDefaultAsync(x => x.ServiceName == serviceName);
+        var serviceId = service.Id;
+        var order = new Orders(userId, serviceId, userName, 1, int.Parse(carName), carModel);
 
         _db.Orders.Add(order);
         await _db.SaveChangesAsync();
 
-        return Content("WOW");
+        return RedirectToAction("Diagnostic");
     }
+
+    #endregion
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

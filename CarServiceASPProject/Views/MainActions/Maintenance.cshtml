@@ -1,6 +1,6 @@
-﻿@model CarServiceLibrary.ViewModels.ServicesViewModel
+﻿@model (CarsViewModel cM, CarServiceLibrary.Models.ViewModels.ServicesViewModel vm) 
+
 @{
-    int Service = 0;
 }
 <div class="container">
     <div class="row">
@@ -27,18 +27,16 @@
         <div class="decor-line"></div>
         <div class="container">
             <div class="row row-cols-2 row-cols-lg-2">
-                @foreach (var item in Model.Services)
+                @foreach (var item in Model.vm.Services)
                 {
                     <div class="col my-3">
                         <div id="serviceModal"
                              class="card border-radius-lg shadow-sm"
-                             onclick="showModal(@item.Id) 
-                                      Service = @item.Id"
+                             onclick="showModal(@item.Id)"
                              data-bs-toggle="modal"
                              data-bs-target="#GetService">
                             <div class="card-body">
-                                <p
-                                    class="card-text fs-4">
+                                <p class="card-text fs-4">
                                     @item.ServiceName
                                 </p>
                             </div>
@@ -58,12 +56,14 @@
                 <div class="modal-content">
                     <form
                         asp-controller="MainActions"
-                        asp-action="CreateOrder"
-                        >
+                        asp-action="CreateOrder">
                         <div class="modal-header text-center justify-content-center">
                             <h2 class="modal-title"
                                 id="ServiceName">
                             </h2>
+                            <input class="is-hidden"
+                                   id="getServiceId"
+                                   name="serviceName"/>
                         </div>
                         <div class="modal-body text-start">
                             <div class="row m-3">
@@ -79,15 +79,17 @@
                             <div class="row m-3">
                                 <div class="col">
                                     <div class="form-group">
+
                                         <label class="fw-bold m-1"
-                                               for="car">
-                                            Марка
+                                               asp-for="cM.CarId">
+                                            Машины
                                         </label>
-                                        <input type="text"
-                                               class="form-control py-2 fs-5"
-                                               id="car"
-                                               placeholder="Марка машины"
-                                               name="userCar">
+                                        <select asp-for="cM.CarId"
+                                                class="form-control py-2 fs-5"
+                                                asp-items="@(new SelectList(ViewBag.ListofCars, "Value", "Text"))"
+                                                name="carName">
+
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col">
@@ -126,7 +128,9 @@
                                     </label>
                                     <input type="text"
                                            class="form-control py-2 fs-5"
-                                           id="phone" placeholder="Номер телефона">
+                                           id="phone"
+                                           placeholder="Номер телефона"
+                                           name="phone">
                                 </div>
                             </div>
                         </div>
@@ -136,8 +140,8 @@
                                 <button
                                     asp-controller="MainActions"
                                     asp-action="CreateOrder"
-                                    asp-route-id="@Service"
-                                    type="submit" class="btn btn-danger fw-bold fs-4">
+                                    type="submit"
+                                    class="btn btn-danger fw-bold fs-4">
                                     Оставить заявку
                                 </button>
                                 <p class="fs-5 p-2">Оперативно перезваниваем в рабочее время</p>
@@ -164,6 +168,7 @@
            success: function(service){
              $("#GetService").modal('show');
               $("#ServiceName").text(service.serviceName);
+              $("#getServiceId").val('').val(service.serviceName);
            }
          })
         }
